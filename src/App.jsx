@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import DrinkCard from "./DrinkCard";
 import DrinkInputGroup from "./DrinkInputGroup";
 import "./styles.css";
@@ -10,7 +10,7 @@ import "./styles.css";
  */
 
 const App = () => {
-  const drinks = [
+  const init = [
     {
       name: "烏龍綠",
       options: "半糖去冰",
@@ -22,18 +22,21 @@ const App = () => {
       buyer: "ken"
     }
   ];
+  const [drinks, setDrinks] = useState(init);
   return (
     <main className="py-5">
       <div className="container">
         <DrinkInputGroup
           onCreate={(value) => {
             console.log("create", JSON.stringify(value));
-            drinks.push({
-              name: value.drinkValue,
-              options: value.detailValue,
-              buyer: value.ordererValue
-            });
-            console.log(JSON.stringify(drinks));
+            setDrinks([
+              ...drinks,
+              {
+                name: value.drinkValue,
+                options: value.detailValue,
+                buyer: value.ordererValue
+              }
+            ]);
           }}
         />
         {drinks.map((drink, index) => (
@@ -50,8 +53,10 @@ const App = () => {
                   drinks[number].options === order.options
                 ) {
                   console.log("delete", JSON.stringify(drinks[number]));
-                  drinks.pop(number);
-                  console.log(JSON.stringify(drinks));
+                  setDrinks([
+                    ...drinks.slice(0, number),
+                    ...drinks.slice(number + 1)
+                  ]);
                 }
               }
             }}
